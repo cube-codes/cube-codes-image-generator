@@ -1,0 +1,58 @@
+{
+	"name": "@cube-codes/cube-codes-image-generator",
+	"version": "1.0.0",
+	"description": "Image Generator for a rubik cube",
+	"type": "commonjs",
+	"main": "dist/package/index.js",
+	"types": "dist/package/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"test": "jest",
+		"build-docs": "typedoc",
+		"ci-build": "npm ci && npm run build && npm run test && npm run build-docs",
+		"build-docs-zip": "cd dist/docs && bestzip ../docs.zip * && cd ../..",
+		"ci-release": "npm run ci-build && npm run build-docs-zip && npm publish --access public"
+	},
+	"files": [
+		"dist/package"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cube-codes/cube-codes-image-generator.git"
+	},
+	"keywords": [
+		"Rubik",
+		"Cube",
+		"Algorithm",
+		"Code",
+		"Program",
+		"Solution"
+	],
+	"author": "Lukas Lentner <kontakt@lukaslentner.de>",
+	"license": "GPL-3.0-only",
+	"bugs": {
+		"url": "https://github.com/cube-codes/cube-codes-image-generator/issues"
+	},
+	"homepage": "http://image-generator.cube.codes",
+	"devDependencies": {
+		"@types/gl": "^4.1.0",
+		"@types/jest": "^26.0.13",
+		"@types/pngjs": "^6.0.0",
+		"@types/sharp": "^0.27.1",
+		"@types/three": "^0.126.1",
+		"bestzip": "^2.1.7",
+		"jest": "^26.4.2",
+		"ts-jest": "^26.3.0",
+		"typedoc": "^0.17.8",
+		"typedoc-plugin-external-module-name": "^4.0.3",
+		"typescript": "^4.0.2"
+	},
+	"dependencies": {
+		"@cube-codes/cube-codes-model": "0.0.30",
+		"@cube-codes/cube-codes-visualizer": "0.0.9",
+		"gl": "^4.9.0",
+		"pngjs": "^6.0.0",
+		"sharp": "^0.27.2",
+		"three": "^0.124.0"
+	}
+}
