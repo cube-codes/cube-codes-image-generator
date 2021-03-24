@@ -8,8 +8,10 @@
 	"scripts": {
 		"build": "tsc",
 		"test": "jest",
+		"build-browser": "rollup -c",
 		"build-docs": "typedoc",
-		"ci-build": "npm ci && npm run build && npm run test && npm run build-docs",
+		"build-docker": "docker build -t test:newest .",
+		"ci-build": "npm ci && npm run build && npm run test && npm run build-browser && npm run build-docs",
 		"build-docs-zip": "cd dist/docs && bestzip ../docs.zip * && cd ../..",
 		"ci-release": "npm run ci-build && npm run build-docs-zip && npm publish --access public"
 	},
@@ -35,13 +37,16 @@
 	},
 	"homepage": "http://image-generator.cube.codes",
 	"devDependencies": {
+		"@rollup/plugin-commonjs": "^15.0.0",
+		"@rollup/plugin-node-resolve": "^9.0.0",
 		"@types/gl": "^4.1.0",
 		"@types/jest": "^26.0.13",
-		"@types/pngjs": "^6.0.0",
-		"@types/sharp": "^0.27.1",
 		"@types/three": "^0.126.1",
 		"bestzip": "^2.1.7",
 		"jest": "^26.4.2",
+		"rollup": "^2.26.11",
+		"rollup-plugin-json": "^4.0.0",
+		"rollup-plugin-node-externals": "^2.2.0",
 		"ts-jest": "^26.3.0",
 		"typedoc": "^0.17.8",
 		"typedoc-plugin-external-module-name": "^4.0.3",
@@ -51,8 +56,7 @@
 		"@cube-codes/cube-codes-model": "0.0.30",
 		"@cube-codes/cube-codes-visualizer": "0.0.9",
 		"gl": "^4.9.0",
-		"pngjs": "^6.0.0",
-		"sharp": "^0.27.2",
+		"jimp": "^0.16.1",
 		"three": "^0.124.0"
 	}
 }

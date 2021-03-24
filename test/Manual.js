@@ -1,6 +1,6 @@
-import CCM from "@cube-codes/cube-codes-model";
-import CCIG from "../dist/package/index.js";
-import fs from 'fs'
+const CCM = require("@cube-codes/cube-codes-model");
+const CCIG = require("../dist/package");
+const fs = require("fs");
 
 (async () => {
 	

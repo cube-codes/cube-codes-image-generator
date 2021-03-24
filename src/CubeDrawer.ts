@@ -1,9 +1,8 @@
 import { WebGLRenderer, WebGLRenderTarget } from 'three'
 import { CubeSpecification, CubeState } from '@cube-codes/cube-codes-model'
 import { CubeSituation } from '@cube-codes/cube-codes-visualizer'
-import { PNG } from 'pngjs';
 import createHeadlessGLContext from 'gl'
-import sharp from 'sharp'
+import Jimp from 'jimp'
 
 export class CubeDrawer {
 
@@ -24,10 +23,17 @@ export class CubeDrawer {
 
 		this.situation = new CubeSituation(this.cubeSpec, this.cubeState, this.hrWidth, this.hrHeight);
 		
+		const context = createHeadlessGLContext(this.hrWidth, this.hrHeight, {
+			alpha: true,
+			preserveDrawingBuffer: true
+		});
+		console.log("CONTEXT: ", context); // GIVES NULL: We have to think about the environment graphics card: headless-gl on aws ...
 		this.renderer = new WebGLRenderer({
 			alpha: true,
-			canvas: { addEventListener: function () {} } as unknown as HTMLCanvasElement,
-			context: createHeadlessGLContext(this.hrWidth, this.hrHeight, { alpha: true, preserveDrawingBuffer: true })
+			canvas: {
+				addEventListener: function () {}
+			} as unknown as HTMLCanvasElement,
+			context: context
 		});
 		this.renderer.setRenderTarget(new WebGLRenderTarget(this.hrWidth, this.hrHeight));
 
@@ -37,32 +43,14 @@ export class CubeDrawer {
 
 	getPng(): Promise<Buffer> {
 
-		const pixels = new Uint8Array(4 * this.hrWidth * this.hrHeight)
-		this.renderer.getContext().readPixels(0, 0, this.hrWidth, this.hrHeight, this.renderer.getContext().RGBA, this.renderer.getContext().UNSIGNED_BYTE, pixels)
-	
-		const png = new PNG({ width: this.hrWidth, height: this.hrHeight })
-		for (let j = 0; j <= this.hrHeight; j++) {
-			for (let i = 0; i <= this.hrWidth; i++) {
-				
-				const k = j * this.hrWidth + i
-				const r = pixels[4 * k]
-				const g = pixels[4 * k + 1]
-				const b = pixels[4 * k + 2]
-				const a = pixels[4 * k + 3]
-	
-				const m = (this.hrHeight - j + 1) * this.hrWidth + i
-				png.data[4 * m] = r
-				png.data[4 * m + 1] = g
-				png.data[4 * m + 2] = b
-				png.data[4 * m + 3] = a
-	
-			}
-		}
-	
-		const resizer = sharp().resize(this.width, this.height);
-		png.pack().pipe(resizer);
+		const png = new Jimp(this.hrWidth, this.hrHeight);
+
+		this.renderer.getContext().readPixels(0, 0, this.hrWidth, this.hrHeight, this.renderer.getContext().RGBA, this.renderer.getContext().UNSIGNED_BYTE, png.bitmap.data);
 		
-		return resizer.toBuffer();
+		png.mirror(false, true); // GL brings data mirrored (I do not know why)
+		png.resize(this.width, this.height);
+
+		return png.getBufferAsync(Jimp.MIME_PNG);
 
 	}
 
